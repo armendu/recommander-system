@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 """
-Module Docstring
+Main application file
 """
 
 __author__ = "Armend Ukehaxhaj"
@@ -8,6 +8,8 @@ __version__ = "1.0.0"
 __license__ = "MIT"
 
 from logzero import logger
+from random import randint
+import numpy as np
 
 primary_data_filename = "input/Sample.txt"
 
@@ -46,9 +48,25 @@ def translate(filename, dict_size):
                 output.append(mapping.get(word, 0))
     return output
 
+
+def generate_batch(batch_size, skip_num, context_window):
+    global index 
+    assert skip_num <= context_window*2
+    assert batch_size % skip_num == 0
+    batch = np.ndarray(shape=(batch_size), dtype=np.int32)
+    labels = np.ndarray(shape=(batch_size, 1), dtype=np.int32)
+    for i in range(batch_size//skip_num):
+        seen_words = [data[(index + k) % len(data)] for k in range(0 - context_window, context_window + 1)]
+        given_word = seen_words.pop(context_window)
+        for j in range(skip_num):
+            batch[i*skip_num+j] = given_word
+            labels[i*skip_num+j, 0] = seen_words.pop(randint(0, len(seen_words) - 1))
+        index = (index + 1) % len(data)
+    return batch, labels
+
 def main():
     logger.info("Starting app")
-    result = translate(primary_data_filename, 300)
+    global data = translate(primary_data_filename, 300)
     logger.info(result)
 
 
