@@ -9,14 +9,18 @@ __license__ = "MIT"
 
 from logzero import logger
 import numpy as np
+import pandas as pd
 import csv
-import pickle 
+import pickle
 from word2vec import word2vec
+from preprocessor import preprocessor
 
 
 primary_data_filename = "input/GoTrainedData.txt"
 sample_data_filename = "input/Sample.txt"
+amazon_sample = "input/amazon_co-ecommerce_sample.csv"
 # loaded_embeddings = np.load("./Data/MyModel.npy")
+
 
 def word_counter(filename):
     word_stats = {}
@@ -83,21 +87,13 @@ def find_similar_names(name):
     for sim_word in reversed(similarity_vector.argsort(0)[-10:]):
         print(sub_reverse_mapping[sim_word[0]])
 
+
 def open_input_file(filename):
-    # row_counter = 0
     canvas = []
-    with open(filename, "r") as input_file:
-        for line in input_file.readlines():
-            for word in line.split():
-                canvas.append(word.lower())
-        # my_csv = csv.reader(input_file)
-        
-        # for row in my_csv:
-        #     if row_counter == 0:
-        #         row_counter += 1
-        #     else:
-        #         canvas.append(row[0].lower())
+    saved = pd.read_csv(filename)
+    canvas = saved['product_name']
     return canvas
+
 
 def main():
     logger.info("Starting app")
@@ -106,7 +102,7 @@ def main():
     settings['n'] = 5                   # dimension of word embeddings
     settings['window_size'] = 2         # context window +/- center word
     settings['min_count'] = 0           # minimum word count
-    settings['epochs'] = 50#5000           # number of training epochs
+    settings['epochs'] = 50  # 5000           # number of training epochs
     # number of negative words to use during training
     settings['neg_samp'] = 10
     settings['learning_rate'] = 0.01    # learning rate
@@ -114,7 +110,13 @@ def main():
 
     # corpus = [['the', 'quick', 'brown', 'fox',
     #            'jumped', 'over', 'the', 'lazy', 'dog']]
-    corpus = open_input_file(sample_data_filename)
+    logger.info("Retrieving corpus")
+    corpus = open_input_file(amazon_sample)
+
+    # Pre process data
+    logger.info("Preprocess the data")
+    pp = preprocessor()
+    corpus = pp.preprocess(corpus)
 
     # INITIALIZE W2V MODEL
     w2v = word2vec(settings)
@@ -125,19 +127,18 @@ def main():
     # train word2vec model
     w2v.train(training_data)
 
-    # Save the trained model as a pickle string. 
-    saved_model = pickle.dumps(w2v) 
-    # save the model to disk
     model_filename = 'models/finalized_model.sav'
-    pickle.dump(w2v, open(model_filename, 'wb'))
-    
-    # Load the pickled model 
-    w2v_from_pickle = pickle.loads(saved_model) 
-    
-    # Use the loaded pickled model to make predictions 
-    w2v_from_pickle.word_sim("play", 3) 
 
-    w2v.word_sim("play", 3)
+    # save the model to disk
+    pickle.dump(w2v, open(model_filename, 'wb'))
+
+    # Load the pickled model
+    w2v_from_pickle = pickle.load(open(model_filename, 'rb'))
+
+    # Use the loaded pickled model to make predictions
+    w2v_from_pickle.word_sim("play", 3)
+
+    # w2v.word_sim("wars", 3)
 
     # global data
     # data, mapping = translate(primary_data_filename, 300)

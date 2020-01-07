@@ -1,2 +1,4 @@
 logzero
 numpy
+pandas
+unidecode
