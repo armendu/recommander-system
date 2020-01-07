@@ -7,9 +7,13 @@ __author__ = "Armend Ukehaxhaj"
 __version__ = "1.0.0"
 __license__ = "MIT"
 
+import math
+import random
 from logzero import logger
 from random import randint
 import numpy as np
+import tensorflow.compat.v1 as tf
+tf.disable_v2_behavior()
 
 primary_data_filename = "input/Sample.txt"
 
@@ -73,6 +77,11 @@ def generate_batch(batch_size, skip_num, context_window):
 
 def main():
     logger.info("Starting app")
+    # To define
+    skip_num = 6
+    context_window = 3
+    num_epochs = int(len(data) * context_window / batch_size) + 1
+
     global data
     data, mapping = translate(primary_data_filename, 300)
     # index = 4
@@ -82,6 +91,50 @@ def main():
     for i in range(8):
         logger.info(str.format(
             "{0}: {1}", reverse_mapping[batch[i]], reverse_mapping[labels[i][0]]))
+
+    # Start with the tensorflow model
+    graph = tf.Graph()
+
+    num_samples = 60
+    # This uses the CPU initially
+    with graph.as_default(), tf.device("/cpu:0"):
+        train_inputs = tf.placeholder(dtype=tf.int32, shape=[batch_size])
+        train_labels = tf.placeholder(dtype=tf.int32, shape=[batch_size, 1])
+
+        input_weights = tf.Variable(
+            tf.random_uniform[mapping_size, hidden_layer_size], -1.0, 1.0)
+        output_weights = tf.Variable(tf.truncated_normal(
+            [mapping_size, hidden_layer_size], stddev=1.0/math.sqrt(hidden_layer_size)))
+
+        output_baises = tf.Variable(tf.zeros([mapping_size]))
+
+        batch_of_inputs = tf.nn.embedding_lookup(input_weights, train_inputs)
+        loss_function = tf.nn.sampled_softmax_loss(
+            weights=output_weights, biases=output_baises, labels=train_labels, inputs=batch_of_inputs, num_samples=num_samples)
+
+        final_loss = tf.reduce_mean(loss_function)
+
+        # Define optimizer
+        optimizer = tf.train.AdagradeOptimizer(1.1).minimize(final_loss)
+
+        num_validation = 10
+        validation_words = np.array(random.sample(range(100), num_validation))
+
+        validation_tf_words = tf.constant(validation_words, dtype=tf.int32)
+
+        normalied_input_weights = input_weights / \
+            tf.sqrt(tf.reduce_sum(tf.square(input_weights), 1, True))
+        batch_of_validation = tf.nn.embedding_lookup(
+            normalied_input_weights, validation_tf_words)
+        similar_words = tf.matmu(
+            batch_of_validation, tf.transpose(normalied_input_weights))
+
+    with tf.Session(graph=graph) as session:
+        tf.global_variables_initilizer().run()
+        for epoch in range(num_epochs):
+            inputs, labels = generate_batch(batch_size, skip_num, context_window)
+            _, loss = session.run([optimizer], {train_inputs:inputs, train_labels: labels})
+
 
 
 if __name__ == "__main__":

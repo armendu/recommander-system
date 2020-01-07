@@ -1,2 +1,2 @@
 logzero
-tensorflow
+tensorflow==1.14
