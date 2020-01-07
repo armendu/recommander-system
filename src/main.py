@@ -55,24 +55,24 @@ def main():
     # logger.info(corpus)
 
     # INITIALIZE W2V MODEL
-    w2v = word2vec(settings)
+    # w2v = word2vec(settings)
 
     # generate training data
-    training_data = w2v.generate_training_data(settings, [corpus])
+    # training_data = w2v.generate_training_data(settings, [corpus])
 
     # train word2vec model
-    w2v.train(training_data)
+    # w2v.train(training_data)
 
     model_filename = 'models/finalized_model.sav'
 
     # save the model to disk
-    pickle.dump(w2v, open(model_filename, 'wb'))
+    # pickle.dump(w2v, open(model_filename, 'wb'))
 
     # Load the pickled model
     w2v_from_pickle = pickle.load(open(model_filename, 'rb'))
 
     # Use the loaded pickled model to make predictions
-    w2v_from_pickle.word_sim("play", 3)
+    w2v_from_pickle.word_sim("star", 10)
 
     # w2v.word_sim("wars", 3)
 
