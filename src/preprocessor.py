@@ -27,6 +27,7 @@ class preprocessor():
     def preprocess(self, input_data: list):
         output = []
         for product in input_data:
+            product = str(product)
             product = product.lower()
             product = re.sub(
                 r"""[!"$#%&\'()*+,\-./:;<=>?@\[\]^_`{|}~’”“′‘\\]""", " ", product)
