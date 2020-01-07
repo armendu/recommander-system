@@ -1,2 +1,2 @@
 logzero
-tensorflow
+numpy
