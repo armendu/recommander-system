@@ -44,7 +44,10 @@ def home():
     form = UserInputForm(request.form)
     if form.is_submitted and request.method == 'POST':
         rec = Recommander()
-        result = rec.recommand(form.user_input.data)
+        try:
+            result = rec.recommand(form.user_input.data)
+        except:
+            print("An error occurred")
         # result_to_show = []
         # for word, sim in result[:5]:
         #     result_to_show.append(word)
