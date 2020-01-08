@@ -1,4 +1,0 @@
-logzero
-numpy
-pandas
-unidecode

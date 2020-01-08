@@ -1,0 +1,31 @@
+{% extends 'layouts/main.html' %}
+{% block title %}Home{% endblock %}
+{% block content %}
+
+<form method="post" class="form">
+  {{ form.user_input(class_ = 'form-control first-input', placeholder = "Please type something", required = true, autofocus = true) }}
+  <input type="submit" value="Submit" class="btn btn-primary btn-lg btn-block" style="margin-top:10px">
+</form>
+
+
+{% if result %}
+  <table class="table">
+    <thead>
+      <tr>
+        <th scope="col">#</th>
+        <th scope="col">Word</th>
+        <th scope="col">Result</th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for i in range(result|count) %}
+        <tr>
+          <td>{{ i + 1 }}</td>
+          <td>{{ result[i][0] }}</td>
+          <td>{{ result[i][1] }}</td>
+        </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+  {% endif %}
+{% endblock %}

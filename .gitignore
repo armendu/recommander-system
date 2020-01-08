@@ -11,7 +11,7 @@ __pycache__/
 .vscode/
 
 # To not include this big file
-input/GoTrainedData.txt
+recommander-lib/input/GoTrainedData.txt
 
 # Distribution / packaging
 .Python

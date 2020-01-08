@@ -1,0 +1,12 @@
+Fabric
+Flask-SQLAlchemy
+Flask-WTF
+WTForms
+coverage
+# ecdsa
+# paramiko
+# pycrypto
+numpy
+pandas
+unidecode
+logzero
