@@ -3,6 +3,22 @@
 {% block content %}
 
 <link rel="stylesheet" href="{{url_for('static', filename='css/product-style.css')}}"></script>
+<script src="{{url_for('static', filename='js/libs/jquery.min.js')}}"></script>
+<link rel="shortcut icon" href="/static/img/img0.jfif">
+<link rel="shortcut icon" href="/static/img/img1.jfif">
+<link rel="shortcut icon" href="/static/img/img2.jfif">
+<link rel="shortcut icon" href="/static/img/img3.jfif">
+<link rel="shortcut icon" href="/static/img/img5.jfif">
+<link rel="shortcut icon" href="/static/img/img4.jfif">
+<script>
+
+jQuery(document).ready(function($) {
+  let randomNumber = Math.floor(Math.random() * 6);
+  let image = "/static/img/img" + randomNumber + ".jfif";
+  let source = "/static/ico/favicon.png";
+  $("#productImage").attr("src", image);
+});
+</script>
 
 <main class="product-container">
   
@@ -16,27 +32,32 @@
       <p>{{ product.description }}</p>
     </div>
  
+    <div class="image-holder">
+      <img id="productImage" src="">
+    </div>
+
     <!-- Product Configuration -->
     <div class="product-configuration">
  
+      <a href="#">How to choose your size.</a>
       <!-- Cable Configuration -->
       <div class="cable-config">
-        <span>Cable configuration</span>
+        <span>Sizes available:</span>
  
         <div class="cable-choose">
-          <button>Straight</button>
-          <button>Coiled</button>
-          <button>Long-coiled</button>
+          <button>32GB</button>
+          <button>64GB</button>
+          <button>128GB</button>
         </div>
  
-        <!--<a href="#">How to configurate your headphones</a> -->
       </div>
     </div>
  
     <!-- Product Pricing -->
     <div class="product-price">
-      <span>148$</span>
-      <a href="#" class="cart-btn">Add to cart</a>
+      <span>{{ range(1, 101) | random }},{{ range(0, 100) | random }}$</span>
+      <a href="#" class="btn btn-success cart-btn">Add to cart</a>
+      <a href="#" class="btn btn-primary cart-btn">Add to wishlist</a>
     </div>
   </div>
 
