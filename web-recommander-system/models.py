@@ -30,10 +30,14 @@ class Product(Base):
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String(250), unique=False)
     manufacturer = db.Column(db.String(250))
+    main_cat = db.Column(db.String(250))
+    description = db.Column(db.String(250))
 
-    def __init__(self, name=None, manufacturer=None):
+    def __init__(self, name=None, manufacturer=None, main_cat=None, description=None):
         self.name = name
         self.manufacturer = manufacturer
+        self.main_cat = main_cat
+        self.description = description
 
 
 # Create tables.

@@ -9,6 +9,12 @@ jQuery(document).ready(function($) {
     window.location = $(this).data("href");
   });
 });
+
+jQuery(document).ready(function($) {
+  $(".clickable-row").hover(function() {
+		$(this).toggleClass("active");
+  });
+});
 </script>
 
 <form method="post" class="form">
@@ -23,6 +29,7 @@ jQuery(document).ready(function($) {
         <th scope="col">#</th>
         <th scope="col">Product name</th>
         <th scope="col">Product manufacturer</th>
+        <th scope="col">Product category</th>
       </tr>
     </thead>
     <tbody>
@@ -31,6 +38,7 @@ jQuery(document).ready(function($) {
           <td>{{ i + 1 }}</td>
           <td>{{ result[i].name }}</td>
           <td>{{ result[i].manufacturer }}</td>
+          <td>{{ result[i].main_cat }}</td>
         </tr>
       {% endfor %}
     </tbody>

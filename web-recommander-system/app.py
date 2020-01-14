@@ -39,12 +39,6 @@ def login_required(test):
 def home():
     form = UserInputForm(request.form)
     if form.is_submitted and request.method == 'POST':
-        # rec = Recommander()
-        # try:
-        #     result = rec.recommand_for(form.user_input.data)
-        # except:
-        #     print("An error occurred")
-
         search = "%{}%".format(form.user_input.data)
         products = Product.query.filter(Product.name.like(search)).all()
 
@@ -117,7 +111,7 @@ def get_product(id):
     no_products_to_recommand = 4
     rec = Recommander()
     try:
-        recommanded_words = rec.recommand_for("64gb")
+        recommanded_words = rec.recommand_for("headphones")
         for word in recommanded_words[:5]:
             search = "%{}%".format(word[0])
 
