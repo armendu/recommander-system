@@ -14,6 +14,7 @@ import csv
 import pickle
 from word2vec import word2vec
 from preprocessor import preprocessor
+import json
 
 
 primary_data_filename = "input/GoTrainedData.txt"
@@ -23,8 +24,26 @@ amazon_sample = "input/amazon_co-ecommerce_sample.csv"
 
 def open_input_file(filename):
     canvas = []
-    saved = pd.read_csv(filename)
-    canvas = saved['product_name']
+    
+    with open('./input/initial-data.json') as json_file:        
+        data = json_file.readlines()
+        for line in data:
+            obj = json.loads(line)
+
+            value = obj.get("title", "")
+            value_brand = obj.get("brand", "")
+            temp_sentance = value + " " + value_brand
+            # print(temp_sentance)
+            
+            canvas.append(temp_sentance)
+            # if value is not None: 
+            #     print(value)
+            #     temp_sentance += value
+            # if value_brand is not None:
+            #     temp_sentance += value_brand
+    # canvas = []
+    # saved = pd.read_csv(filename)
+    # canvas = saved['product_name']
     return canvas
 
 
@@ -33,9 +52,9 @@ def main():
     settings = {}
 
     settings['n'] = 5                   # dimension of word embeddings
-    settings['window_size'] = 2         # context window +/- center word
+    settings['window_size'] = 3        # context window +/- center word
     settings['min_count'] = 0           # minimum word count
-    settings['epochs'] = 50  # 5000           # number of training epochs
+    settings['epochs'] = 3  # 5000           # number of training epochs
     # number of negative words to use during training
     settings['neg_samp'] = 10
     settings['learning_rate'] = 0.01    # learning rate
@@ -43,13 +62,17 @@ def main():
 
     # corpus = [['the', 'quick', 'brown', 'fox',
     #            'jumped', 'over', 'the', 'lazy', 'dog']]
-    logger.info("Retrieving corpus")
+    # logger.info("Retrieving corpus")
     corpus = open_input_file(amazon_sample)
 
     # Pre process data
     logger.info("Preprocess the data")
     pp = preprocessor()
     corpus = pp.preprocess(corpus)
+
+    # for row in new_corpus:
+    #     for word in row:
+    #         logger.info(word)
     
     # logger.info("Preprocessed data: ")
     # logger.info(corpus)
@@ -58,12 +81,13 @@ def main():
     # w2v = word2vec(settings)
 
     # generate training data
-    # training_data = w2v.generate_training_data(settings, [corpus])
+    # logger.info("Training")
+    # training_data = w2v.generate_training_data(settings, new_corpus)
 
     # train word2vec model
     # w2v.train(training_data)
 
-    model_filename = 'models/finalized_model.sav'
+    model_filename = 'models/finalized_model-refactored.sav'
 
     # save the model to disk
     # pickle.dump(w2v, open(model_filename, 'wb'))
@@ -72,30 +96,7 @@ def main():
     w2v_from_pickle = pickle.load(open(model_filename, 'rb'))
 
     # Use the loaded pickled model to make predictions
-    w2v_from_pickle.word_sim("star", 10)
-
-    # w2v.word_sim("wars", 3)
-
-    # global data
-    # data, mapping = translate(primary_data_filename, 300)
-    # # index = 4
-    # batch, labels = generate_batch(8, 4, 2)
-    # reverse_mapping = dict(zip(mapping.values(), mapping.keys()))
-
-    # sub_mapping = {}
-
-    # sub_reverse_mapping = {}
-    # sub_embeddings = []
-    # for k, v in mapping.items():
-    #     if k in name_list:
-    #         sub_mapping[k] = len(sub_embeddings)
-    #         sub_reverse_mapping[len(sub_embeddings)] = k
-    #         sub_embeddings.append(loaded_embeddings[v])
-    # sub_embeddings = np.array(sub_embeddings)
-
-    # for i in range(8):
-    #     logger.info(str.format(
-    #         "{0}: {1}", reverse_mapping[batch[i]], reverse_mapping[labels[i][0]]))
+    w2v_from_pickle.word_sim("microphone", 6)
 
 
 if __name__ == "__main__":

@@ -1,6 +1,7 @@
 
 import re
 import unidecode
+import numpy as np
 
 
 class preprocessor():
@@ -27,16 +28,20 @@ class preprocessor():
     def preprocess(self, input_data: list):
         output = []
         for product in input_data:
+            placeholder_list = []
             product = str(product)
             product = product.lower()
             product = re.sub(
                 r"""[!"$#%&\'()*+,\-./:;<=>?@\[\]^_`{|}~’”“′‘\\]""", " ", product)
             product = unidecode.unidecode(product)
             product = re.sub(" +", " ", product)
-
+            # product = self.number_converter(product)
             separated_words = product.split()
-            for word in separated_words:
-                word = self.number_converter(word)
-                output.append(word)
 
+            for word in separated_words:
+                if word != '':
+                    placeholder_list = np.append(placeholder_list, word)
+            
+            output.append(placeholder_list)
+        
         return output

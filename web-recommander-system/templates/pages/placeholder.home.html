@@ -3,10 +3,9 @@
 {% block content %}
 
 <form method="post" class="form">
-  {{ form.user_input(class_ = 'form-control first-input', placeholder = "Please type something", required = true, autofocus = true) }}
-  <input type="submit" value="Submit" class="btn btn-primary btn-lg btn-block" style="margin-top:10px">
+  {{ form.user_input(class_ = 'form-control first-input', placeholder = "Type the name of the product", required = true, autofocus = true) }}
+  <input type="submit" value="Search" class="btn btn-primary btn-lg btn-block" style="margin-top:10px">
 </form>
-
 
 {% if result %}
   <table class="table">

@@ -76,8 +76,17 @@ class word2vec():
         dl_dw2 = np.outer(h, e)
         dl_dw1 = np.outer(x, np.dot(self.w2, e.T))
 
+        first, second = np.shape(self.w1)
+        
         # UPDATE WEIGHTS
-        self.w1 = self.w1 - (self.eta * dl_dw1)
+        # self.w1 = self.w1 - np.matmul(self.eta, dl_dw1)
+        # self.w2 = self.w2 - np.matmul(self.eta, dl_dw2)
+        try:
+            # TODO: Enable reshaping 
+            self.w1 = self.w1 - np.reshape((self.eta * dl_dw1), (first, second))
+        except:
+            pass
+
         self.w2 = self.w2 - (self.eta * dl_dw2)
         pass
 
