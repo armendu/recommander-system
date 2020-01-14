@@ -2,6 +2,7 @@
 import re
 import unidecode
 import numpy as np
+import pandas as pd
 
 
 class preprocessor():
@@ -38,8 +39,11 @@ class preprocessor():
             # product = self.number_converter(product)
             separated_words = product.split()
 
+            # Remove duplicate words
+            separated_words = y = list(set(separated_words))
+
             for word in separated_words:
-                if word != '':
+                if word != '' and word is not None:
                     placeholder_list = np.append(placeholder_list, word)
             
             output.append(placeholder_list)

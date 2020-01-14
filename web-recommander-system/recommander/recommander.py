@@ -11,13 +11,16 @@ from recommander.preprocessor import preprocessor
 app = Flask(__name__)
 app.config.from_object('config')
 
+
 class Recommander:
     def __init__(self):
         super().__init__()
         base_dir = os.path.abspath(os.path.dirname(__file__))
-        
-        self.BASE_INPUT_FILE_DIR = base_dir + "\\input\\" + app.config["INPUT_TRAINING_FILE"]
-        self.BASE_MODEL_FILE_DIR = base_dir + "\\models\\" + app.config["MODEL_FILENAME"]
+
+        self.BASE_INPUT_FILE_DIR = base_dir + "\\input\\" + app.config[
+            "INPUT_TRAINING_FILE"]
+        self.BASE_MODEL_FILE_DIR = base_dir + "\\models\\" + app.config[
+            "MODEL_FILENAME"]
 
     def open_input_file(self):
         canvas = []
@@ -47,14 +50,14 @@ class Recommander:
     def train(self):
         settings = {}
 
-        settings['n'] = 5                   # dimension of word embeddings
-        settings['window_size'] = 2         # context window +/- center word
-        settings['min_count'] = 0           # minimum word count
-        settings['epochs'] = 2  # 5000           # number of training epochs
+        settings['n'] = 5  # dimension of word embeddings
+        settings['window_size'] = 2  # context window +/- center word
+        settings['min_count'] = 0  # minimum word count
+        settings['epochs'] = 3  # 5000           # number of training epochs
         # number of negative words to use during training
         settings['neg_samp'] = 10
-        settings['learning_rate'] = 0.01    # learning rate
-        np.random.seed(0)                   # set the seed for reproducibility
+        settings['learning_rate'] = 0.01  # learning rate
+        np.random.seed(0)  # set the seed for reproducibility
 
         corpus = self.open_input_file()
 

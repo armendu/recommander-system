@@ -39,15 +39,16 @@ def login_required(test):
 def home():
     form = UserInputForm(request.form)
     if form.is_submitted and request.method == 'POST':
-        rec = Recommander()
-        try:
-            result = rec.recommand_for(form.user_input.data)
-        except:
-            print("An error occurred")
+        # rec = Recommander()
+        # try:
+        #     result = rec.recommand_for(form.user_input.data)
+        # except:
+        #     print("An error occurred")
+        products = Product.query.all()
         
         return render_template('pages/placeholder.home.html',
                                data=user,
-                               result=result[1:6],
+                               result=products,
                                form=form)
     return render_template('pages/placeholder.home.html', data=user, form=form)
 
@@ -106,8 +107,8 @@ def train():
     return redirect(url_for("home"))
 
 
-@app.route('/product')
-def get_product():
+@app.route('/product/<id>')
+def get_product(id):
     product_to_show = Product.query.filter_by(id="1").first()
     print(product_to_show)
 

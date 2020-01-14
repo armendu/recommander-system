@@ -2,6 +2,15 @@
 {% block title %}Home{% endblock %}
 {% block content %}
 
+<script src="{{url_for('static', filename='jquery.min.js')}}"></script>
+<script>
+jQuery(document).ready(function($) {
+  $(".clickable-row").click(function() {
+    window.location = $(this).data("href");
+  });
+});
+</script>
+
 <form method="post" class="form">
   {{ form.user_input(class_ = 'form-control first-input', placeholder = "Type the name of the product", required = true, autofocus = true) }}
   <input type="submit" value="Search" class="btn btn-primary btn-lg btn-block" style="margin-top:10px">
@@ -12,19 +21,20 @@
     <thead>
       <tr>
         <th scope="col">#</th>
-        <th scope="col">Word</th>
-        <th scope="col">Result</th>
+        <th scope="col">Product name</th>
+        <th scope="col">Product manufacturer</th>
       </tr>
     </thead>
     <tbody>
       {% for i in range(result|count) %}
-        <tr>
+        <tr class="clickable-row" data-href={{ url_for('get_product', id=result[i].id)}} method=POST>
           <td>{{ i + 1 }}</td>
-          <td>{{ result[i][0] }}</td>
-          <td>{{ result[i][1] }}</td>
+          <td>{{ result[i].name }}</td>
+          <td>{{ result[i].manufacturer }}</td>
         </tr>
       {% endfor %}
     </tbody>
   </table>
   {% endif %}
 {% endblock %}
+
