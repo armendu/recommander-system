@@ -44,8 +44,10 @@ def home():
         #     result = rec.recommand_for(form.user_input.data)
         # except:
         #     print("An error occurred")
-        products = Product.query.all()
-        
+
+        search = "%{}%".format(form.user_input.data)
+        products = Product.query.filter(Product.name.like(search)).all()
+
         return render_template('pages/placeholder.home.html',
                                data=user,
                                result=products,
@@ -109,12 +111,36 @@ def train():
 
 @app.route('/product/<id>')
 def get_product(id):
-    product_to_show = Product.query.filter_by(id="1").first()
-    print(product_to_show)
+    product_to_show = Product.query.filter_by(id=id).first()
 
+    recommandations = []
+    no_products_to_recommand = 4
+    rec = Recommander()
+    try:
+        recommanded_words = rec.recommand_for("64gb")
+        for word in recommanded_words[:5]:
+            search = "%{}%".format(word[0])
+
+            # Get ids of the already added products
+            top_recommanded_products_query = Product.query.with_entities(Product.id).filter(
+                Product.name.like(search),
+                Product.id != id, Product.id).limit(no_products_to_recommand)
+
+            top_recommanded_products = Product.query.filter(Product.name.like(search), Product.id.notin_(top_recommanded_products_query)).limit(no_products_to_recommand).all()
+            
+            if len(top_recommanded_products):
+                no_products_to_recommand -= 1
+
+            for product in top_recommanded_products:
+                recommandations.append(product)
+
+    except Exception as e:
+        logging.warning("The following error occurred: " + str(e))
+    print("To recommand" + str(recommandations))
     return render_template('pages/placeholder.product.html',
                            data=user,
-                           product=product_to_show)
+                           product=product_to_show,
+                           recommandations=recommandations)
 
 
 @app.errorhandler(500)

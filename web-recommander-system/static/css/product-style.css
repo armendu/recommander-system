@@ -12,17 +12,20 @@
   display: flex;
 }
 
-.left-column {
-  width: 65%;
+/* .left-column { */
+.right-column {
+  width: 40%;
   position: relative;
 }
  
-.right-column {
-  width: 35%;
+/* .right-column { */
+.left-column {
+  width: 60%;
   /* margin-top: 60px; */
+  padding: 2em 2em;
 }
 
-.left-column img {
+/* .left-column img {
   width: 100%;
   position: absolute;
   left: 0;
@@ -33,7 +36,7 @@
  
 .left-column img.active {
   opacity: 1;
-}
+} */
 
 .product-description {
   border-bottom: 1px solid #E1E8EE;

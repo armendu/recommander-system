@@ -5,19 +5,14 @@
 <link rel="stylesheet" href="{{url_for('static', filename='css/product-style.css')}}"></script>
 
 <main class="product-container">
- 
+  
   <!-- Left Column -->
   <div class="left-column">
-    <img data-image="black" src="{{url_for('static', filename='img/red.png')}}" alt="">
-  </div>
- 
-  <!-- Right Column -->
-  <div class="right-column">
  
     <!-- Product Description -->
     <div class="product-description">
       <span>Headphones</span>
-      <h1>{{ product.name }}</h1>
+      <h3>{{ product.name }}</h3>
       <p>The preferred choice of a vast range of acclaimed DJs. Punchy, bass-focused sound and high isolation. Sturdy headband and on-ear cushions suitable for live performance</p>
     </div>
  
@@ -43,6 +38,31 @@
       <span>148$</span>
       <a href="#" class="cart-btn">Add to cart</a>
     </div>
+  </div>
+
+  
+  <!-- Eight Column -->
+  <div class="right-column">
+    <div class="product-description">
+      <!-- <span>Headphones</span> -->
+      <h3>Recommandations</h3>
+    </div>
+    <table class="table">
+      <thead>
+        <tr>
+          <th scope="col">Product name</th>
+          <th scope="col">Product manufacturer</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for i in range(recommandations|count) %}
+          <tr class="clickable-row" data-href={{ url_for('get_product', id=recommandations[i].id)}} method=POST>
+            <td>{{ recommandations[i].name }}</td>
+            <td>{{ recommandations[i].manufacturer }}</td>
+          </tr>
+        {% endfor %}
+      </tbody>
+    </table>
   </div>
 </main>
 
