@@ -62,16 +62,7 @@ def login():
     """
     form = LoginForm()
     if form.validate_on_submit:
-        # user = User.query.get(form.email.data)
-        # if user:
-        # if bcrypt.check_password_hash(user.password, form.password.data):
         if form.name.data == "admin" and form.password.data == "123456":
-            # user.authenticated = True
-            # db.session.add(user)
-            # db.session.commit()
-            # login_user(user, remember=True)
-
-            # Placeholder user
             user['username'] = form.name.data
             return redirect(url_for("home"))
     return render_template("forms/login.html", form=form)
@@ -140,10 +131,10 @@ def get_product(id):
         # Get ids of the already added products
         top_recommanded_products_query = Product.query.with_entities(Product.id).filter(
             Product.name.like(search),
-            Product.id != id, Product.id).limit(no_products_to_recommand)
+            Product.id != id).limit(no_products_to_recommand)
 
         top_recommanded_products = Product.query.filter(Product.name.like(search), Product.id.notin_(
-            top_recommanded_products_query)).limit(no_products_to_recommand).all()
+            top_recommanded_products_query), Product.id!=id).limit(no_products_to_recommand).all()
 
         if len(top_recommanded_products):
             no_products_to_recommand -= 1

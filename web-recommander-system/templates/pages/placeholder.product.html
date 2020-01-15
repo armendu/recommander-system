@@ -10,12 +10,24 @@
 <link rel="shortcut icon" href="/static/img/img3.jfif">
 <link rel="shortcut icon" href="/static/img/img5.jfif">
 <link rel="shortcut icon" href="/static/img/img4.jfif">
-<script>
 
+<script>
 jQuery(document).ready(function($) {
   let randomNumber = Math.floor(Math.random() * 6);
   let image = "/static/img/img" + randomNumber + ".jfif";
   $("#productImage").attr("src", image);
+});
+
+jQuery(document).ready(function($) {
+  $(".clickable-row").click(function() {
+    window.location = $(this).data("href");
+  });
+});
+
+jQuery(document).ready(function($) {
+  $(".clickable-row").hover(function() {
+		$(this).toggleClass("active");
+  });
 });
 </script>
 
