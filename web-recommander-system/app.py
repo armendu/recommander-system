@@ -107,34 +107,55 @@ def train():
 def get_product(id):
     product_to_show = Product.query.filter_by(id=id).first()
 
+    if not product_to_show:
+        pass
+
     recommandations = []
+    recommanded_words = []
+    no_w2c_results_to_consider = 4
     no_products_to_recommand = 4
     rec = Recommander()
-    try:
-        recommanded_words = rec.recommand_for("headphones")
-        for word in recommanded_words[:5]:
-            search = "%{}%".format(word[0])
 
-            # Get ids of the already added products
-            top_recommanded_products_query = Product.query.with_entities(Product.id).filter(
-                Product.name.like(search),
-                Product.id != id, Product.id).limit(no_products_to_recommand)
+    # Get the keywords from the name of the product
+    product_keywords = product_to_show.name.split()
 
-            top_recommanded_products = Product.query.filter(Product.name.like(search), Product.id.notin_(top_recommanded_products_query)).limit(no_products_to_recommand).all()
-            
-            if len(top_recommanded_products):
-                no_products_to_recommand -= 1
+    for keyword in product_keywords:
+        try:
+            # Try to find similar words for that keyword
+            # Do this until we have enough recommanded words
+            # First words get a larger number to consider
+            w2v_result = rec.recommand_for(keyword.lower())
+            for result in w2v_result[:no_w2c_results_to_consider]:
+                recommanded_words.append(result)
+                if no_w2c_results_to_consider > 0:
+                    no_w2c_results_to_consider -= 1
+                else:
+                    break
+        except Exception as e:
+            logging.warning("The following error occurred: " + str(e))
 
-            for product in top_recommanded_products:
-                recommandations.append(product)
+    for word in recommanded_words[:5]:
+        search = "%{}%".format(word[0])
 
-    except Exception as e:
-        logging.warning("The following error occurred: " + str(e))
-    print("To recommand" + str(recommandations))
+        # Get ids of the already added products
+        top_recommanded_products_query = Product.query.with_entities(Product.id).filter(
+            Product.name.like(search),
+            Product.id != id, Product.id).limit(no_products_to_recommand)
+
+        top_recommanded_products = Product.query.filter(Product.name.like(search), Product.id.notin_(
+            top_recommanded_products_query)).limit(no_products_to_recommand).all()
+
+        if len(top_recommanded_products):
+            no_products_to_recommand -= 1
+
+        for product in top_recommanded_products:
+            recommandations.append(product)
+
     return render_template('pages/placeholder.product.html',
                            data=user,
                            product=product_to_show,
                            recommandations=recommandations)
+
 
 
 @app.errorhandler(500)
@@ -158,6 +179,12 @@ if not app.debug:
     file_handler.setLevel(logging.INFO)
     app.logger.addHandler(file_handler)
     app.logger.info('errors')
+
+
+def takeSecond(elem):
+    # take second element for sort
+    return elem[1]
+
 
 # Default port:
 if __name__ == '__main__':
